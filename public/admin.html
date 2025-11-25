@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LabLink | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h3>📂 Active Loans</h3>
+        <ul id="active-loans-list"></ul>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header style="background: white; color: #333; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid #e2e8f0;">
+            <h2>👨‍🏫 Admin Control Center</h2>
+        </header>
+
+        <!-- 1. PENDING REQUESTS -->
+        <section class="requests-panel">
+            <h2>🔔 Pending Requests</h2>
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Item</th>
+                        <th>Return By</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="requests-body"></tbody>
+            </table>
+        </section>
+
+        <!-- 2. ADD NEW ITEM -->
+        <section class="admin-panel">
+            <h2>➕ Add New Inventory</h2>
+            <div class="input-group">
+                <input type="text" id="newName" placeholder="Item Name">
+                <input type="text" id="newCategory" placeholder="Category">
+                <input type="number" id="newQty" placeholder="Qty">
+                <button onclick="addNewItem()" class="add-btn">Add Stock</button>
+            </div>
+        </section>
+
+        <!-- 3. MANAGE INVENTORY (NEW SECTION) -->
+        <section class="admin-panel" style="margin-top: 2rem;">
+            <h2>📦 Manage Current Stock</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Delete old or broken items here.</p>
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Qty</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-list-body">
+                    <!-- Items will appear here -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

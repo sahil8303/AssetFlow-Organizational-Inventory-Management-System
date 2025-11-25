@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LabLink | Admin Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <h2>🔒 Admin Access</h2>
+        <p>Please log in to manage lab inventory.</p>
+        
+        <input type="email" id="email" placeholder="Email Address" value="admin@lab.com">
+        <input type="password" id="password" placeholder="Password" value="admin123">
+        <button onclick="login()" class="login-btn">Secure Login</button>
+        
+        <p id="error-msg" style="color: red; display: none; margin-top: 10px;"></p>
+        <a href="index.html" style="display: block; margin-top: 15px; color: #64748b;">← Back to Student View</a>
+    </div>
+
+    <script>
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            const response = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // SAVE THE KEY (Token)
+                localStorage.setItem('adminToken', result.token);
+                window.location.href = 'admin.html'; // Redirect to Admin Dashboard
+            } else {
+                errorMsg.innerText = result.message;
+                errorMsg.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabLink | Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">⚡ LabLink</div>
+        <div class="nav-links">
+            <button onclick="openStatusModal()" class="nav-btn">🔍 Check Status</button>
+            <a href="login.html" class="admin-link">Admin Login</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="stats-container">
+            <h1>Component Catalog</h1>
+            <p>Browse live inventory and request items instantly.</p>
+        </div>
+
+        <div id="inventory-grid" class="grid-container">
+            <!-- Items injected by JS -->
+        </div>
+    </main>
+
+    <!-- MODAL 1: BORROW REQUEST -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📝 Borrow Request</h2>
+                <span onclick="closeModal()" class="close-icon">&times;</span>
+            </div>
+            
+            <p id="modalItemName" style="color:#2563eb; font-weight:600; margin-bottom:1rem;">Item Name</p>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="studentName" placeholder="e.g. Sahil">
+            </div>
+
+            <div class="input-group">
+                <label>Registration Number</label>
+                <input type="text" id="regNo" placeholder="e.g. 22BEC0262">
+            </div>
+
+            <div class="input-group">
+                <label>Return Date</label>
+                <input type="date" id="returnDate">
+            </div>
+
+            <input type="hidden" id="selectedItemId">
+
+            <div class="modal-actions">
+                <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+                <button onclick="submitRequest()" class="btn-primary">Send Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CHECK STATUS -->
+    <div id="statusModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 My Dashboard</h2>
+                <span onclick="closeStatusModal()" class="close-icon">&times;</span>
+            </div>
+
+            <p style="color:#64748b; margin-bottom:1rem; font-size:0.9rem;">Enter your Reg No to see your pending requests and active loans.</p>
+
+            <div class="search-bar">
+                <input type="text" id="statusRegNo" placeholder="Enter Reg No...">
+                <button onclick="checkMyStatus()">Search</button>
+            </div>
+
+            <div id="statusResults">
+                <p style="text-align:center; color:#94a3b8; font-size:0.9rem;">Results will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script src="script.js"></script>
+    <script>
+        // Update Modal Logic to work with new CSS classes
+        function openStatusModal() {
+            document.getElementById('statusModal').classList.add('active');
+        }
+        function closeStatusModal() {
+            document.getElementById('statusModal').classList.remove('active');
+        }
+        
+        // Overwrite the existing openRequestModal to use 'active' class
+        const originalOpenRequest = window.openRequestModal;
+        window.openRequestModal = function(id, name) {
+            document.getElementById('requestModal').classList.add('active');
+            document.getElementById('modalItemName').innerText = `Requesting: ${name}`;
+            document.getElementById('selectedItemId').value = id;
+        }
+        
+        // Overwrite closeModal
+        window.closeModal = function() {
+            document.getElementById('requestModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
