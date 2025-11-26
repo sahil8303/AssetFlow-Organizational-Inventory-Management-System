@@ -2,20 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LabLink | Admin Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetFlow | Secure Access</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Enhanced Login Styles */
+        .login-body {
+            position: relative;
+            background: #050505; /* Pitch Black for contrast */
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        .login-card {
+            z-index: 10;
+            background: rgba(20, 25, 35, 0.85); /* Slightly more opaque */
+            border: 1px solid rgba(6, 182, 212, 0.3); /* Brighter Border */
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.15);
+            padding: 3rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #22d3ee, #3b82f6); /* Cyan to Blue */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .login-card input {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1rem;
+            padding: 14px;
+            width: 100%;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .login-card input:focus {
+            border-color: #22d3ee;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+            outline: none;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #06b6d4, #2563eb);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); /* Stronger Glow */
+            transition: 0.3s;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+        }
+    </style>
 </head>
 <body class="login-body">
+    
+    <!-- ANIMATED BACKGROUND CANVAS -->
+    <canvas id="bgCanvas"></canvas>
+
     <div class="login-card">
-        <h2>🔒 Admin Access</h2>
-        <p>Please log in to manage lab inventory.</p>
+        <h2>Admin Portal</h2>
+        <p style="color: #94a3b8; margin-bottom: 2rem;">Secure Asset Management</p>
         
-        <input type="email" id="email" placeholder="Email Address" value="admin@lab.com">
-        <input type="password" id="password" placeholder="Password" value="admin123">
-        <button onclick="login()" class="login-btn">Secure Login</button>
+        <input type="email" id="email" placeholder="admin@lab.com" autocomplete="off">
+        <input type="password" id="password" placeholder="••••••••">
         
-        <p id="error-msg" style="color: red; display: none; margin-top: 10px;"></p>
-        <a href="index.html" style="display: block; margin-top: 15px; color: #64748b;">← Back to Student View</a>
+        <button onclick="login()" class="login-btn">
+            Access Dashboard
+        </button>
+        
+        <p id="error-msg" style="color: #f87171; display: none; margin-top: 15px; font-size:0.9rem;"></p>
+        
+        <a href="index.html" style="display: block; margin-top: 30px; color: #64748b; text-decoration:none; font-size:0.9rem; transition:0.3s;">
+            &larr; Back to Student View
+        </a>
     </div>
 
     <script>
@@ -23,24 +106,93 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('error-msg');
+            errorMsg.style.display = 'none';
 
-            const response = await fetch('http://localhost:3000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // SAVE THE KEY (Token)
-                localStorage.setItem('adminToken', result.token);
-                window.location.href = 'admin.html'; // Redirect to Admin Dashboard
-            } else {
-                errorMsg.innerText = result.message;
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    localStorage.setItem('adminToken', result.token);
+                    window.location.href = 'admin.html';
+                } else {
+                    errorMsg.innerText = result.message;
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.innerText = "Connection Failed. Is Server Running?";
                 errorMsg.style.display = 'block';
             }
         }
+
+        // --- BRIGHTER CONSTELLATION ANIMATION ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8; // Faster speed
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.size = Math.random() * 3 + 1; // Larger stars
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = "#22d3ee"; // Bright Cyan
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) particles.push(new Particle()); // More particles
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        // Brighter lines
+                        ctx.strokeStyle = `rgba(34, 211, 238, ${0.2 - dist/1500})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
     </script>
 </body>
 </html>

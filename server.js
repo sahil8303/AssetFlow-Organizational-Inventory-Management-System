@@ -13,8 +13,8 @@ app.use(express.static('public'));
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'sahilk832003@gmail.com',
-        pass: 'YOUR_APP_PASSWORD_HERE' // -------------<--- Change this back only on your local PC
+        user: 'sahilk832003@gmail.com',  // ✅ Your Email
+        pass: 'moiu atnm njio nqxr'      // ✅ Your App Password
     }
 });
 
