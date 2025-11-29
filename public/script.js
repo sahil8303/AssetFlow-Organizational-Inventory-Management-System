@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
-
+const API_URL = '/api';
 document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to Dark for best 3D effect
     document.documentElement.setAttribute('data-theme', savedTheme);
